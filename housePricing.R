@@ -1,0 +1,62 @@
+#Load Package
+library('tidyverse')
+library('e1071')
+library(corrplot)
+library(functional)
+library(reshape2)
+
+##Read Training data
+df_train <- read_csv('train.csv')
+
+##Check columns
+colnames(df_train)
+
+##Summary of sale price
+
+summary(df_train$SalePrice)
+
+## histogram on sale price
+df_train %>% ggplot(aes(SalePrice)) +
+  geom_histogram(fill="white", bins = 50) +
+geom_density()
+
+df_train %>% 
+  ggplot(aes(SalePrice)) + 
+  geom_histogram(aes(y=..density..), bins = 50, fill='lightblue') + 
+  geom_density(col = "darkblue", size=2)
+
+##Skewness and Kurtosis
+skewness(df_train$SalePrice)
+kurtosis(df_train$SalePrice)
+
+#Scatter plot of saleprice and Grlivarea
+
+df_train %>% 
+  ggplot(aes(x = GrLivArea, y=SalePrice)) + 
+  geom_point(color='blue')
+
+df_train %>% 
+  ggplot(aes(x = TotalBsmtSF, y=SalePrice)) + 
+  geom_point(color='blue')
+
+df_train %>% 
+  ggplot(aes(x=factor(OverallQual), y=SalePrice)) + 
+  geom_boxplot(aes(fill=factor(OverallQual)))
+
+df_train %>% 
+  ggplot(aes(x=factor(YearBuilt), y=SalePrice)) + 
+  geom_boxplot(aes(fill=factor(YearBuilt)), show.legend = FALSE)
+
+
+df_train_num <- df_train %>% select_if(is.numeric) %>% drop_na()
+
+df_train.cor <- cor(df_train_num)
+
+corrplot(df_train.cor)
+palette = colorRampPalette(c("green", "white", "red")) (20)
+
+heatmap(x = df_train.cor, col = palette, symm = TRUE)
+melted_df <- melt(df_train.cor)
+head(melted_df)
+ggplot(data = melted_df, aes(x=Var1, y=Var2, fill=value)) + 
+  geom_tile()
