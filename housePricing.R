@@ -16,9 +16,6 @@ colnames(df_train)
 summary(df_train$SalePrice)
 
 ## histogram on sale price
-df_train %>% ggplot(aes(SalePrice)) +
-  geom_histogram(fill="white", bins = 50) +
-geom_density()
 
 df_train %>% 
   ggplot(aes(SalePrice)) + 
@@ -29,34 +26,43 @@ df_train %>%
 skewness(df_train$SalePrice)
 kurtosis(df_train$SalePrice)
 
-#Scatter plot of saleprice and Grlivarea
+##Scatter plot of saleprice and Grlivarea
 
 df_train %>% 
   ggplot(aes(x = GrLivArea, y=SalePrice)) + 
   geom_point(color='blue')
 
+##Scatter plot of saleprice and TotalBsmtSF
+
 df_train %>% 
   ggplot(aes(x = TotalBsmtSF, y=SalePrice)) + 
   geom_point(color='blue')
+
+##Box plot of OverallQual over sale price
 
 df_train %>% 
   ggplot(aes(x=factor(OverallQual), y=SalePrice)) + 
   geom_boxplot(aes(fill=factor(OverallQual)))
 
+##Box plot of Year built over sale price
+
 df_train %>% 
   ggplot(aes(x=factor(YearBuilt), y=SalePrice)) + 
   geom_boxplot(aes(fill=factor(YearBuilt)), show.legend = FALSE)
 
+##Find only numeric valued variables and drop NA's
 
 df_train_num <- df_train %>% select_if(is.numeric) %>% drop_na()
 
+##Find correlation of each element against each other
+
 df_train.cor <- cor(df_train_num)
 
-corrplot(df_train.cor)
-palette = colorRampPalette(c("green", "white", "red")) (20)
-
-heatmap(x = df_train.cor, col = palette, symm = TRUE)
+## Drawing a heated map
 melted_df <- melt(df_train.cor)
 head(melted_df)
 ggplot(data = melted_df, aes(x=Var1, y=Var2, fill=value)) + 
   geom_tile()
+
+melted_df %>% filter(Var1 == 'SalePrice')
+
