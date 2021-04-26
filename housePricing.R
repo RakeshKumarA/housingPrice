@@ -62,7 +62,28 @@ df_train.cor <- cor(df_train_num)
 melted_df <- melt(df_train.cor)
 head(melted_df)
 ggplot(data = melted_df, aes(x=Var1, y=Var2, fill=value)) + 
-  geom_tile()
+  geom_tile() + scale_fill_gradient(low="yellow", high="red")
 
-melted_df %>% filter(Var1 == 'SalePrice')
+
+##Zoomed to only top sale price correlations
+
+melted_df
+
+## Shows great positive correlation
+melted_df %>% filter(Var1 == 'SalePrice') %>% arrange(desc(value)) %>% head(10)
+
+## Shows very low negative correlation - CAn be discarded.
+melted_df %>% filter(Var1 == 'SalePrice') %>% arrange((value)) %>% head(10)
+
+## Required variables 
+
+reqVariables <- c("SalePrice","OverallQual","GrLivArea","GarageCars",
+                  "TotalBsmtSF", "FullBath", "YearBuilt")
+
+
+selectedVariables <- df_train_num %>% select(reqVariables)
+library(GGally)
+selectedVariables
+
+ggpairs(selectedVariables)
 
